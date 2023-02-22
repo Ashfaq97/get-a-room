@@ -7,10 +7,7 @@ AWS.config.update({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 })
 
-console.log(process.env.AWS_DEFAULT_REGION)
-
 const dynamoClient = new AWS.DynamoDB.DocumentClient()
-
 const Table = 'rooms'
 
 // POST rooms

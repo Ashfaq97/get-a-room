@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-roommates-dev-183517-authRole",
+      "UnauthRoleArn": "arn:aws:iam::515541868197:role/amplify-roommates-dev-183517-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::515541868197:role/amplify-roommates-dev-183517-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-roommates-dev-183517-deployment",
+      "UnauthRoleName": "amplify-roommates-dev-183517-unauthRole",
+      "StackName": "amplify-roommates-dev-183517",
+      "StackId": "arn:aws:cloudformation:us-west-2:515541868197:stack/amplify-roommates-dev-183517/8c3f1010-b259-11ed-9e7d-027cfbe3a35b",
+      "AmplifyAppId": "d1beb04s4k6o47"
+    }
+  }
+}

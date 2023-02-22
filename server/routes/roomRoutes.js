@@ -4,7 +4,6 @@ const {createOrUpdate, readAllRooms, getRoomById, deleteRoomById } = require('..
 
 //GET ALL ROOMS
 router.get('/rooms', async (req, res) => {
-    //const { success, allRooms } = readAllRooms;
 
     try {
         const allRooms = await readAllRooms();
@@ -27,13 +26,6 @@ router.get('/rooms/:id', async(req, res) => {
         res.status(500).json({ err: 'Something went wrong...' })
     }
 
-    // const { success, allRooms } = await getRoomById(id);
-
-    // if(success) {
-    //     return res.json({success, allRooms});
-    // } 
-
-    // return res.status(500).json({ success: false, message: 'Error' })
 })
 
 // CREATE ROOM
@@ -48,14 +40,6 @@ router.post('/rooms', async(req, res) => {
         res.status(500).json({ err: 'Something went wrong...' })
     }
 
-
-    // const { success, data } = await createOrUpdate(req.params)
-
-    // if(success){
-    //     return res.json({success, data})
-    // }
-
-    // return res.status(500).json({success: false, message: 'Error'})
 })
 
 // DELETE ROOM
@@ -70,14 +54,6 @@ router.delete('/rooms/:id', async(req, res) => {
         res.status(500).json({ err: 'Something went wrong...' })
     }
 
-
-    // const { success } = await deleteRoomById(req.params.id)
-
-    // if(success) {
-    //     return res.json({ success });
-    // }
-
-    // return res.status(500).json({success: false, message: 'Item could not be deleted...'})
 })
 
 
