@@ -1,22 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const {createOrUpdateUser,  } = require('../controllers/userController');
+const {createUser } = require('../controllers/userController');
 const bcrypt = require('bcryptjs');
 
 const BCRYPT_SALT = bcrypt.genSalt(7);
 
 
 // CREATE ROOM
-router.post('/users', async(req, res) => {
-    const {name, email, password} = req.body;
-    const user = {
-        name,
-        email,
-        password: bcrypt.hashSync(password, BCRYPT_SALT)
-    }
+router.post('/register', async(req, res) => {
 
     try {
-        const newUser = await createOrUpdateUser(user);
+        const newUser = await createUser(user);
         res.json(newUser);
     } catch (error) {
         console.error(error);

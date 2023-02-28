@@ -1,30 +1,45 @@
 const AWS = require('aws-sdk');
-require('dotenv').config();
+const User = require('../models/User');
+const bcrypt = require('bcryptjs');
 
-AWS.config.update({
-    region: process.env.AWS_DEFAULT_REGION,
-    accessKeyId: process.env.AWS_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-})
+// AWS.config.update({
+//     region: process.env.AWS_DEFAULT_REGION,
+//     accessKeyId: process.env.AWS_ACCESS_KEY,
+//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+// })
 
-const dynamoClient = new AWS.DynamoDB.DocumentClient()
-const Table = 'users'
+// const dynamoClient = new AWS.DynamoDB.DocumentClient()
+// const Table = 'users'
+
+const bcryptSalt = bcrypt.genSalt(10);
 
 // POST users || CREATE user
-const createOrUpdateUser = async (user) => {
 
-    const params = {
-        TableName: Table,
-        Item: user,
-        ReturnValues: "ALL_OLD"
-    }
+const createUser = async (req, res) => {
+    const {name, email, password} = req.body;
+    const userDoc = await User.create({
+        name, 
+        email,
+        password: bcrypt.hashSync(password, bcryptSalt),
+    })
 
-    return await dynamoClient.put(params).promise();
-
+    res.json(userDoc);
 }
 
 
+// const createOrUpdateUser = async (user) => {
+
+//     const params = {
+//         TableName: Table,
+//         Item: user,
+//         ReturnValues: "ALL_OLD"
+//     }
+
+//     return await dynamoClient.put(params).promise();
+
+// }
+
+
 module.exports = {
-    dynamoClient,
-    createOrUpdateUser
+    createUser
 }

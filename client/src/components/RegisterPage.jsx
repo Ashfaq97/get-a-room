@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useState } from 'react';
 import axios from 'axios'
+import UserPool from '../UserPool'
 
 function RegisterPage() {
 
@@ -9,13 +10,20 @@ function RegisterPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    function registerUser(ev) {
+    async function registerUser(ev) {
+
         ev.preventDefault();
-        axios.post('/api/v1/register', {
-            name, 
-            email, 
-            password
-        })
+        try {
+            await axios.post('/register', {
+                name,
+                email,
+                password,
+            });
+            alert('Registration successful. Now you can log in');
+        } catch (e) {
+            alert('Registration failed. Please try again later');
+        }
+
     }
 
   return (
