@@ -10,6 +10,9 @@ const User = require('./models/User')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const downloader = require('image-downloader');
+const multer = require('multer');
+const fs = require('fs');
 
 
 const app = express();
@@ -20,20 +23,13 @@ app.use(cors({
   }));
 app.use(express.json());
 app.use(cookieParser())
+app.use('/uploads', express.static(__dirname+'/uploads'));
 app.use(express.urlencoded({ extended: false }))
 
 mongoose.connect(process.env.MONGO_URI);
 
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'sdkfjhqwejhccpauwe20jsadkjfh';
-
-app.get('/', (req, res) => {
-    res.send({ message: "Hello World!" })
-})
-
-app.get('/hello', (req, res) => {
-    res.send({ message: 'Task Manager App'})
-})
 
 app.get('/account', (req, res) => {
     res.send('This is my account! ')
@@ -80,7 +76,7 @@ app.post('/login', async (req, res) => {
 })
 
 app.get('/profile', (req, res) => {
-    const token = req.cookies;
+    const {token} = req.cookies;
 
     if(token) {
         jwt.verify(token, jwtSecret, {}, async (err, userData) => {
@@ -91,6 +87,38 @@ app.get('/profile', (req, res) => {
     } else {
         res.json(null);
     }
+})
+
+app.post('/logout', (req, res) => {
+    res.cookie('token', '').json(true);
+})
+
+app.post('/upload-by-link', async (req, res) => {
+    const {link} = req.body;
+    const newName = 'photo_' + Date.now() + '.jpg';
+
+    await downloader.image({
+        url : link,
+        dest : __dirname + '/uploads/' + newName,
+    })
+
+    res.json(newName);
+        
+})
+
+const photosMiddleware = multer({dest: 'server/uploads'});
+
+app.post('/upload', photosMiddleware.array('photos', 100), (req, res) => {
+    const uploadedFiles = [];
+    for(let i=0; i<req.files.length; i++) {
+        const {path, originalname} = req.files[i];
+        const parts = originalname.split('.');
+        const extension = parts[parts.length - 1];
+        const newPath = path + '.' + extension;
+        fs.renameSync(path, newPath)
+        uploadedFiles.push(newPath.replace('server/uploads/', ''));
+    }
+    res.json(uploadedFiles);
 })
 
 
