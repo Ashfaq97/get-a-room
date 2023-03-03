@@ -10,8 +10,8 @@ const PlaceSchema = new Schema({
     perks: [String],
     extraInfo: String,
     nearestSchool: String,
-    leaseStart: Number,
-    leaseEnd: Number,
+    leaseStart: String,
+    leaseEnd: String,
 
 })
 

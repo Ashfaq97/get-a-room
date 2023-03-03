@@ -1,11 +1,24 @@
-import React from 'react'
-import Header from '../components/Header'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
 
 function HomePage() {
+  const [places, setPlaces] = useState([]);
+
+  useEffect(() => {
+    axios.get('/places').then(response => {
+      setPlaces(response.data)
+    })
+  }, [])
+
+
   return (
-    <>
-      <h3>Welcome to the home page!!</h3>
-    </>
+    <div>
+      {places.length > 0 && places.map(place => (
+        <div>
+          {place.title}
+        </div>
+      ))}
+    </div>
     
 
   )

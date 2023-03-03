@@ -1,18 +1,23 @@
 
 const express = require("express");
 const cors = require('cors');
-const PORT = process.env.PORT || 3000
-require('dotenv').config();
-const rooms = require('./routes/roomRoutes')
-const users = require('./routes/userRoutes')
 const mongoose = require('mongoose')
-const User = require('./models/User')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const downloader = require('image-downloader');
 const multer = require('multer');
 const fs = require('fs');
+require('dotenv').config();
+
+const PORT = process.env.PORT || 3000
+
+const rooms = require('./routes/roomRoutes')
+const users = require('./routes/userRoutes')
+
+const User = require('./models/User')
+const Place = require('./models/Place')
+
 
 
 const app = express();
@@ -53,6 +58,7 @@ app.post('/register', async (req, res) => {
     
 })
 
+// User login
 app.post('/login', async (req, res) => {
 
     const {email,password} = req.body;
@@ -75,6 +81,7 @@ app.post('/login', async (req, res) => {
     }
 })
 
+// User Profile Page
 app.get('/profile', (req, res) => {
     const {token} = req.cookies;
 
@@ -89,10 +96,12 @@ app.get('/profile', (req, res) => {
     }
 })
 
+// User logout
 app.post('/logout', (req, res) => {
     res.cookie('token', '').json(true);
 })
 
+// Upload images using a link
 app.post('/upload-by-link', async (req, res) => {
     const {link} = req.body;
     const newName = 'photo_' + Date.now() + '.jpg';
@@ -106,6 +115,7 @@ app.post('/upload-by-link', async (req, res) => {
         
 })
 
+// Upload images from computer
 const photosMiddleware = multer({dest: 'server/uploads'});
 
 app.post('/upload', photosMiddleware.array('photos', 100), (req, res) => {
@@ -119,6 +129,76 @@ app.post('/upload', photosMiddleware.array('photos', 100), (req, res) => {
         uploadedFiles.push(newPath.replace('server/uploads/', ''));
     }
     res.json(uploadedFiles);
+})
+
+// Create a new place
+app.post('/places', (req, res) => {
+    const {token} = req.cookies;
+    const {
+        title, address, addedPhotos,
+        description, perks, extraInfo, 
+        nearestSchool, leaseStart, leaseEnd,
+    } = req.body;
+
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+        if(err) throw err;
+        const placeDoc = await Place.create({
+            owner : userData.id,
+            title, address, photos:addedPhotos,
+            description, perks, extraInfo, 
+            nearestSchool, leaseStart, leaseEnd,
+        })
+
+        res.json(placeDoc);
+    })
+})
+
+// Get all the places belonging to a specific user
+app.get('/user-places', (req, res) => {
+    const {token} = req.cookies;
+
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+        if(err) throw err;
+        const {id} = userData;
+        res.json( await Place.find({owner : id}));
+    })
+
+})
+
+// Get one specific place
+app.get('/places/:id', async (req, res) => {
+    const {id} = req.params;
+    res.json(await Place.findById(id));
+})
+
+app.put('/places/:id', async (req, res) => {
+    const {token} = req.cookies;
+    const {
+        id, title, address, addedPhotos,
+        description, perks, extraInfo, 
+        nearestSchool, leaseStart, leaseEnd,
+    } = req.body;
+
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+        if(err) throw err;
+        const placeDoc = await Place.findById(id);
+
+        if(userData.id === placeDoc.owner.toString()) {
+            placeDoc.set({
+                title, address, photos: addedPhotos,
+                description, perks, extraInfo, 
+                nearestSchool, leaseStart, leaseEnd,
+            });
+            await placeDoc.save();
+            res.json('Listing has been updated')
+        }
+    })
+
+
+})
+
+app.get('/places', async (req, res) => {
+    res.json(await Place.find());
 })
 
 
