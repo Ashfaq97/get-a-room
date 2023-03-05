@@ -16,7 +16,7 @@ function PlacesFormPage() {
     const [leaseStart,setLeaseStart] = useState('');
     const [leaseEnd,setLeaseEnd] = useState('');
     const [nearestSchool,setNearestSchool] = useState('');
-    const [price,setPrice] = useState(100);
+    const [price,setPrice] = useState(1000);
     const [redirect, setRedirect] = useState(false);
 
     useEffect(() => {
@@ -34,6 +34,7 @@ function PlacesFormPage() {
             setLeaseStart(data.leaseStart);
             setLeaseEnd(data.leaseEnd);
             setPerks(data.perks);
+            setPrice(data.price);
         })
     }, [id])
 
@@ -65,14 +66,14 @@ function PlacesFormPage() {
             await axios.put('/places/' + id, {
                 id, title, address, addedPhotos, 
                 description, perks, extraInfo, 
-                nearestSchool, leaseStart, leaseEnd
+                nearestSchool, leaseStart, leaseEnd, price
             })
             setRedirect(true);
         } else {
             await axios.post('/places', {
                 title, address, addedPhotos, 
                 description, perks, extraInfo, 
-                nearestSchool, leaseStart, leaseEnd
+                nearestSchool, leaseStart, leaseEnd, price
             })
             setRedirect(true);
         }
@@ -148,6 +149,13 @@ function PlacesFormPage() {
                                 name="leaseEnd" />
                         </div>
                     </div>
+
+                    {inputHeader('Rent')}
+                    <input 
+                        type="number" 
+                        value={price} 
+                        onChange={ev => setPrice(ev.target.value)} 
+                        placeholder='$'/>
 
                     <button className='primary my-4'>Save</button>                    
 

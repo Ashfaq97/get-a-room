@@ -12,6 +12,7 @@ const PlaceSchema = new Schema({
     nearestSchool: String,
     leaseStart: String,
     leaseEnd: String,
+    price: Number,
 
 })
 

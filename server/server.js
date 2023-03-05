@@ -13,7 +13,6 @@ require('dotenv').config();
 const PORT = process.env.PORT || 3000
 
 const rooms = require('./routes/roomRoutes')
-const users = require('./routes/userRoutes')
 
 const User = require('./models/User')
 const Place = require('./models/Place')
@@ -137,7 +136,7 @@ app.post('/places', (req, res) => {
     const {
         title, address, addedPhotos,
         description, perks, extraInfo, 
-        nearestSchool, leaseStart, leaseEnd,
+        nearestSchool, leaseStart, leaseEnd, price
     } = req.body;
 
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
@@ -146,7 +145,7 @@ app.post('/places', (req, res) => {
             owner : userData.id,
             title, address, photos:addedPhotos,
             description, perks, extraInfo, 
-            nearestSchool, leaseStart, leaseEnd,
+            nearestSchool, leaseStart, leaseEnd, price,
         })
 
         res.json(placeDoc);
@@ -176,7 +175,7 @@ app.put('/places/:id', async (req, res) => {
     const {
         id, title, address, addedPhotos,
         description, perks, extraInfo, 
-        nearestSchool, leaseStart, leaseEnd,
+        nearestSchool, leaseStart, leaseEnd, price,
     } = req.body;
 
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
@@ -187,7 +186,7 @@ app.put('/places/:id', async (req, res) => {
             placeDoc.set({
                 title, address, photos: addedPhotos,
                 description, perks, extraInfo, 
-                nearestSchool, leaseStart, leaseEnd,
+                nearestSchool, leaseStart, leaseEnd, price
             });
             await placeDoc.save();
             res.json('Listing has been updated')
@@ -197,8 +196,16 @@ app.put('/places/:id', async (req, res) => {
 
 })
 
+// Get all the listings and display to everyone
 app.get('/places', async (req, res) => {
     res.json(await Place.find());
+})
+
+// Get a single listing
+app.get('/places/:id', async (req, res) => {
+    const id = req.params;
+    const placeDoc = await Place.findById(id);
+    res.json(placeDoc);
 })
 
 
