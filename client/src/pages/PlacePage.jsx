@@ -79,8 +79,26 @@ function PlacePage() {
             </div>
 
             <div className='my-16'>
-                <h2 className='text-2xl mb-2'>Description</h2>
+                <h2 className='text-2xl mb-2 font-semibold'>Description</h2>
                 {place.description}
+            </div>
+
+            <div className='bg-white -mx-8 px-8 py-8'>
+                <div>
+                    <h2 className='font-semibold text-2xl'>Extra Info</h2>
+                </div>
+                <div className="mb-2 mt-2 text-sm text-gray-700 leading-5 whitespace-pre-wrap">{place.extraInfo}</div>
+            </div>
+
+            <div className='bg-white -mx-8 py-8 px-8'>
+                <div>
+                    <h2 className='font-semibold text-2xl'>Perks</h2>
+                </div>
+                <ul className='mt-4 flex flex-row gap-16'>
+                    {place.perks?.length > 0 && place?.perks?.map(perk => (
+                        <li className='p-4 border border-primary rounded-xl'>{perk}</li>
+                    ))}
+                </ul>
             </div>
         </div> 
     </div>
