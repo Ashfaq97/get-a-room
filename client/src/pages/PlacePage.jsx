@@ -8,6 +8,10 @@ function PlacePage() {
     const [showAllPhotos, setShowAllPhotos] = useState(false);
     const {id} = useParams();
 
+    const emojis = {
+        'pets' : 'xyz',
+    }
+
     useEffect(() => {
         if(!id) return;
 
@@ -31,7 +35,7 @@ function PlacePage() {
                         </button>
                     </div>
                     {place?.photos?.length > 0 && place.photos.map(photo => (
-                        <div className='gap-4'>
+                        <div className='gap-4 text-center md:mx-auto lg:mx-auto'>
                             <img src={'http://localhost:3000/uploads/'+photo} alt="" />
                         </div>
                     ))}
@@ -41,9 +45,9 @@ function PlacePage() {
     }
 
   return (
-    <div className='mt-4 bg-gray-100 -mx-8 px-8 py-8'>
+    <div className='mt-4 lg:mx-auto -mx-8 px-8 py-8 max-w-screen-lg justify-center'>
         <div>
-            <h1 className='text-3xl'>{place.title}</h1>
+            <h1 className='text-3xl md:text-red-500 lg:text-blue-500 sm:text-violet-500'>{place.title}</h1>
 
             <div className='flex my-2'>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 mt-1 mr-1">
@@ -54,7 +58,7 @@ function PlacePage() {
             </div>
 
             <div className='relative'>
-                <div className='grid gap-2 grid-cols-[2fr_1fr] mt-4 rounded-2xl overflow-hidden'>
+                <div className='grid gap-2 grid-cols-[2fr_1fr] md:grid-cols-[2fr_1fr_1fr] lg:grid-cols-[2fr_1fr_1fr] mt-4 rounded-2xl overflow-hidden'>
                     <div>
                         {place.photos?.[0] && (
                             <div>
@@ -74,32 +78,71 @@ function PlacePage() {
                         </div>
                     </div>
 
+                    <div className='grid'>
+                        {place.photos?.[3] && (
+                            <img className='aspect-square object-cover' src={'http://localhost:3000/uploads/' + place.photos[3]} alt="" />
+                        )}
+                        <div className='overflow-hidden'>
+                            {place.photos?.[4] && (
+                                <img className='aspect-square object-cover relative top-2' src={'http://localhost:3000/uploads/' + place.photos[4]} alt="" />
+                            )}
+                        </div>
+                    </div>
+
                 </div>
                 <button onClick={() => setShowAllPhotos(true)} className='absolute opacity-80 bottom-2 right-2 bg-white px-2 py-1 rounded-md text-sm shadow-lg'>Show more photos</button>
             </div>
 
-            <div className='my-16'>
+            <div className='mt-16 mb-8'>
                 <h2 className='text-2xl mb-2 font-semibold'>Description</h2>
                 {place.description}
             </div>
 
-            <div className='bg-white -mx-8 px-8 py-8'>
+            <div className='-mx-8 px-8 py-4'>
                 <div>
                     <h2 className='font-semibold text-2xl'>Extra Info</h2>
                 </div>
                 <div className="mb-2 mt-2 text-sm text-gray-700 leading-5 whitespace-pre-wrap">{place.extraInfo}</div>
             </div>
 
-            <div className='bg-white -mx-8 py-8 px-8'>
+            <div className='-mx-8 py-4 px-8'>
                 <div>
                     <h2 className='font-semibold text-2xl'>Perks</h2>
                 </div>
                 <ul className='mt-4 flex flex-row gap-16'>
                     {place.perks?.length > 0 && place?.perks?.map(perk => (
-                        <li className='p-4 border border-primary rounded-xl'>{perk}</li>
+                        <li className='p-4 border border-primary rounded-xl '>{perk}</li>
                     ))}
                 </ul>
             </div>
+
+            
+
+            <div className='flex flex-row'>
+                <div className='flex gap-12 mt-4 basis-2/3'>
+                    <div className=''>
+                        <div>
+                            <h2 className='font-semibold text-lg'>Nearest University</h2>
+                        </div>
+                        <div className='mt-2'>{place.nearestSchool}</div>
+                    </div>
+
+                    <div>
+                        <h2 className='font-semibold text-lg'>Lease Start</h2>
+                        <p className='mt-2'>{place.leaseStart}</p>
+                    </div>
+
+                    <div>
+                        <h2 className='font-semibold text-lg'>Lease End</h2>
+                        <p className='mt-2'>{place.leaseEnd}</p>
+                    </div>
+                </div>
+
+                <div className='ml-16 basis-1/3 px-4 py-2'>
+                    <button className='bg-primary text-white hover:text-black rounded-xl font-semibold text-lg px-6 py-4 '>Contact the owner</button>
+                </div>
+            </div>
+            
         </div> 
     </div>
   )
